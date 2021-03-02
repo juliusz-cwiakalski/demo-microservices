@@ -1,5 +1,7 @@
 package pl.jcw.demo.microservices.user;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,18 @@ public class UserController {
 
   @GetMapping("/{id}")
   public ResponseEntity<UserDetailsDto> getUser(@PathVariable("id") String id) {
-    UserDetailsDto user = new UserDetailsDto(id, "My name is " + id);
+    UserDetailsDto user = new UserDetailsDto(id, "My name is " + id, getHostname());
     log.info("Returning user details {}", user);
     return ResponseEntity.ok(user);
+  }
+  
+  private String getHostname() {
+    try {
+      return InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      // TODO Auto-generated catch block
+      return "error occured while getting host name + " +e.getMessage();
+    }
   }
 
 }
